@@ -18,7 +18,11 @@
   </script>
 
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nutri Crush" />
   <title>Nutri Crush — Match Smart. Eat Better. Feel Amazing!</title>
   <style>
     /* ==========================================================================
@@ -411,7 +415,8 @@
       margin: 0 auto;
       width: 100%;
       aspect-ratio: 1;
-      /* width: var(--board-size);
+      /* max-width: var(--board-size);
+      width: var(--board-size);
       height: var(--board-size);*/
     }
 
@@ -1031,6 +1036,40 @@
       transition-duration: 40ms !important;
     }
 
+    /* Safari WebKit Fullscreen & iOS Pseudo-Fullscreen Fallback Mode */
+    html:-webkit-full-screen,
+    html:fullscreen {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 18% 15%, #26354d 0%, #162032 50%, #090d16 100%);
+    }
+
+    body.pseudo-fullscreen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    body.pseudo-fullscreen .app-shell {
+      max-width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      padding: env(safe-area-inset-top, 8px) clamp(8px, 2vw, 16px) env(safe-area-inset-bottom, 8px);
+      justify-content: space-evenly;
+    }
+
+    body.pseudo-fullscreen .brand-tagline {
+      display: none;
+    }
+
+    body.pseudo-fullscreen {
+      --board-size: min(92vw, 56dvh, 520px);
+    }
+
     /* Responsive adjustments for compact screens / landscape */
     @media (max-height: 740px) {
       :root {
@@ -1296,6 +1335,39 @@
       cascadeStepBonus: 20,
       unusedMoveBonus: 25
     };
+
+    const AUTO_HINT_DELAY_MS = 2000;
+    let autoHintTimer = null;
+
+    function clearAutoHintTimer() {
+      if (autoHintTimer) {
+        clearTimeout(autoHintTimer);
+        autoHintTimer = null;
+      }
+    }
+
+    function resetAutoHintTimer() {
+      clearAutoHintTimer();
+      autoHintTimer = setTimeout(() => {
+        const outcomeOpen = document.getElementById('outcomeModal').classList.contains('open');
+        const settingsOpen = document.getElementById('settingsModal').classList.contains('open');
+        if (
+          GameState.isLocked ||
+          outcomeOpen ||
+          settingsOpen ||
+          GameState.movesLeft <= 0 ||
+          GameState.score >= GameState.targetScore ||
+          GameState.hintPair
+        ) {
+          return;
+        }
+        const moves = findValidMoves(GameState.board);
+        if (moves.length > 0) {
+          GameState.hintPair = moves[Math.floor(Math.random() * moves.length)];
+          renderBoard();
+        }
+      }, AUTO_HINT_DELAY_MS);
+    }
 
     const FOOD_SYMBOLS = [
       { id: 'potato',      name: 'Potato',      emoji: '🥔', colorGroup: 'brown',  benefit: 'Potatoes supply energizing potassium & Vitamin B6!' },
@@ -2047,6 +2119,7 @@
       const dist = Math.abs(r1 - r2) + Math.abs(c1 - c2);
       if (dist !== 1) return;
 
+      clearAutoHintTimer();
       GameState.isLocked = true;
       GameState.selected = null;
       GameState.hintPair = null;
@@ -2086,6 +2159,7 @@
         await sleep(320);
         renderBoard();
         GameState.isLocked = false;
+        resetAutoHintTimer();
         return;
       }
 
@@ -2242,6 +2316,7 @@
       }
 
       GameState.isLocked = false;
+      resetAutoHintTimer();
     }
 
     /* ==========================================================================
@@ -2271,6 +2346,7 @@
         updateHUD();
         boardEl.classList.remove('level-transition');
         AudioEngine.playLevelStart();
+        resetAutoHintTimer();
       }, GameState.settings.reducedMotion ? 10 : 180);
     }
 
@@ -2330,6 +2406,7 @@
     function handleTileSelect(r, c) {
       if (GameState.isLocked) return;
       AudioEngine.init();
+      resetAutoHintTimer();
 
       if (!GameState.selected) {
         GameState.selected = { r, c };
@@ -2437,38 +2514,88 @@
     }
 
     /* ==========================================================================
-       15. FULLSCREEN MANAGEMENT
+       15. FULLSCREEN MANAGEMENT (WITH SAFARI WEBKIT & IOS FALLBACK)
        ========================================================================== */
+    function isNativeFullscreen() {
+      return Boolean(
+        document.fullscreenElement ||
+        document.webkitFullscreenElement ||
+        document.webkitCurrentFullScreenElement
+      );
+    }
+
+    function isAnyFullscreen() {
+      return isNativeFullscreen() || document.body.classList.contains('pseudo-fullscreen');
+    }
+
+    function enablePseudoFullscreen() {
+      document.body.classList.add('pseudo-fullscreen');
+      window.scrollTo(0, 1);
+      syncFullscreenUI();
+      showToast('📱 Maximized for Safari! (Tip: Share → Add to Home Screen for full iOS screen)');
+    }
+
+    function disablePseudoFullscreen() {
+      document.body.classList.remove('pseudo-fullscreen');
+      syncFullscreenUI();
+    }
+
     function toggleFullscreen() {
       AudioEngine.init();
       AudioEngine.playClick();
       const docEl = document.documentElement;
-      const isFull = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
 
-      if (!isFull) {
-        const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen;
+      if (!isAnyFullscreen()) {
+        const req =
+          docEl.requestFullscreen ||
+          docEl.webkitRequestFullscreen ||
+          docEl.webkitRequestFullScreen;
+
         if (req) {
-          req.call(docEl).catch(() => {
-            showToast('Fullscreen is restricted by this browser frame.');
-          });
+          try {
+            // Note: Safari's webkitRequestFullscreen may return undefined instead of a Promise
+            const res = req.call(docEl);
+            if (res && typeof res.catch === 'function') {
+              res.catch(() => {
+                enablePseudoFullscreen();
+              });
+            }
+          } catch (err) {
+            enablePseudoFullscreen();
+          }
         } else {
-          showToast('Fullscreen API is not supported on this browser.');
+          // iPhone iOS Safari does not expose DOM requestFullscreen on <html>/<div>; use viewport fullscreen fallback
+          enablePseudoFullscreen();
         }
       } else {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (document.body.classList.contains('pseudo-fullscreen')) {
+          disablePseudoFullscreen();
+          return;
+        }
+        const exit =
+          document.exitFullscreen ||
+          document.webkitExitFullscreen ||
+          document.webkitCancelFullScreen;
+
         if (exit) {
-          exit.call(document).catch(() => {});
+          try {
+            const res = exit.call(document);
+            if (res && typeof res.catch === 'function') {
+              res.catch(() => {});
+            }
+          } catch (err) {}
         }
       }
     }
 
     function syncFullscreenUI() {
       const btn = document.getElementById('fullscreenToggleBtn');
-      const isFull = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+      const isFull = isAnyFullscreen();
       btn.textContent = isFull ? '🗗' : '⛶';
       btn.title = isFull ? 'Exit Fullscreen (Esc)' : 'Enter Fullscreen';
       btn.setAttribute('aria-label', isFull ? 'Exit fullscreen mode' : 'Enter fullscreen mode');
-      FX.resize();
+      btn.setAttribute('aria-pressed', String(isFull));
+      setTimeout(() => FX.resize(), 60);
     }
 
     /* ==========================================================================
@@ -2603,6 +2730,7 @@
       const closeSettings = () => {
         AudioEngine.playClick();
         settingsModal.classList.remove('open');
+        resetAutoHintTimer();
       };
 
       document.getElementById('openSettingsBtn').addEventListener('click', () => openSettings('tabSettings'));
@@ -2683,6 +2811,7 @@
       window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           if (settingsModal.classList.contains('open')) closeSettings();
+          if (document.body.classList.contains('pseudo-fullscreen')) disablePseudoFullscreen();
         }
       });
 
