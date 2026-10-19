@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 
-  
   <!-- Google AdSense -->
   <meta name="google-adsense-account" content="ca-pub-7963880628277539">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7963880628277539" crossorigin="anonymous"></script>
@@ -26,26 +25,26 @@
        2. CSS DESIGN SYSTEM & ANIMATIONS
        ========================================================================== */
     :root {
-      --bg-deep: #0b2919;
-      --bg-mid: #134629;
-      --bg-light: #1e6b3b;
+      --bg-deep: #0f172a;
+      --bg-mid: #1e293b;
+      --bg-light: #334155;
       --emerald: #10b981;
       --emerald-dark: #047857;
-      --lime: #84cc16;
-      --lime-bright: #a3e635;
-      --cream: #fefce8;
-      --cream-soft: #fffbeb;
-      --cream-card: rgba(254, 252, 232, 0.94);
+      --lime: #f59e0b;
+      --lime-bright: #fbbf24;
+      --cream: #fffdf9;
+      --cream-soft: #fefce8;
+      --cream-card: rgba(255, 253, 248, 0.96);
       --gold: #f59e0b;
       --gold-bright: #fbbf24;
       --coral: #f43f5e;
-      --text-dark: #0f291a;
-      --text-muted: #3f624d;
-      --text-light: #f0fdf4;
-      --board-bg: rgba(11, 41, 25, 0.72);
-      --board-border: rgba(163, 230, 53, 0.45);
-      --tile-bg: linear-gradient(145deg, #ffffff 0%, #f7fee7 65%, #ecfccb 100%);
-      --tile-shadow: 0 4px 0 #84cc16, 0 6px 12px rgba(0, 0, 0, 0.24);
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+      --text-light: #f8fafc;
+      --board-bg: rgba(15, 23, 42, 0.88);
+      --board-border: rgba(251, 191, 36, 0.68);
+      --tile-bg: linear-gradient(145deg, #ffffff 0%, #fffdf9 68%, #f1f5f9 100%);
+      --tile-shadow: 0 4px 0 #cbd5e1, 0 6px 12px rgba(0, 0, 0, 0.32);
       --tile-radius: clamp(8px, 1.8vw, 14px);
       --board-size: min(88vw, 500px);
       --grid-gap: clamp(4px, 1vw, 7px);
@@ -66,7 +65,7 @@
       overflow-x: hidden;
       font-family: var(--font-main);
       color: var(--text-dark);
-      background: radial-gradient(circle at 15% 15%, #228b46 0%, #124527 48%, #071f12 100%);
+      background: radial-gradient(circle at 18% 15%, #26354d 0%, #162032 50%, #090d16 100%);
       user-select: none;
       -webkit-user-select: none;
     }
@@ -410,8 +409,10 @@
       justify-content: center;
       align-items: center;
       margin: 0 auto;
-      width: var(--board-size);
-      height: var(--board-size);
+      width: 96%;
+      aspect-ratio: 1;
+      /* width: var(--board-size);
+      height: var(--board-size);*/
     }
 
     .board-container {
@@ -557,11 +558,62 @@
       pointer-events: none;
     }
 
-    /* Subtle category accent border bottom for visual distinction (especially Spinach vs Cabbage) */
-    .board-tile[data-food="spinach"] { background: linear-gradient(145deg, #ffffff 0%, #dcfce7 100%); box-shadow: 0 4px 0 #16a34a, 0 6px 12px rgba(0,0,0,0.22); }
-    .board-tile[data-food="cabbage"] { background: linear-gradient(145deg, #ffffff 0%, #ecfccb 100%); box-shadow: 0 4px 0 #65a30d, 0 6px 12px rgba(0,0,0,0.22); }
-    .board-tile[data-food="papaya"]  { background: linear-gradient(145deg, #ffffff 0%, #ffedd5 100%); box-shadow: 0 4px 0 #ea580c, 0 6px 12px rgba(0,0,0,0.22); }
-    .board-tile[data-food="sunlight"]{ background: linear-gradient(145deg, #ffffff 0%, #fef9c3 100%); box-shadow: 0 4px 0 #eab308, 0 6px 12px rgba(0,0,0,0.22); }
+    /* High-contrast color-coded tile surfaces so all colored vegetables pop vividly */
+    /* Green vegetables: crisp pearl-white backdrop with emerald rim so green emojis stand out sharply */
+    .board-tile[data-food="broccoli"],
+    .board-tile[data-food="spinach"],
+    .board-tile[data-food="moringa"],
+    .board-tile[data-food="avocado"] {
+      background: linear-gradient(155deg, #ffffff 0%, #f0fdf4 100%);
+      border-color: #bbf7d0;
+      box-shadow: 0 4px 0 #059669, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    .board-tile[data-food="cabbage"],
+    .board-tile[data-food="guava"] {
+      background: linear-gradient(155deg, #ffffff 0%, #ecfdf5 100%);
+      border-color: #a7f3d0;
+      box-shadow: 0 4px 0 #0d9488, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* Red vegetables & fruits: crisp warm-white backdrop with ruby-crimson rim */
+    .board-tile[data-food="tomato"],
+    .board-tile[data-food="pomegranate"] {
+      background: linear-gradient(155deg, #ffffff 0%, #fff1f2 100%);
+      border-color: #fecdd3;
+      box-shadow: 0 4px 0 #e11d48, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* Orange vegetables & fruits: crisp cream-white backdrop with tangerine rim */
+    .board-tile[data-food="carrot"],
+    .board-tile[data-food="orange"],
+    .board-tile[data-food="pumpkin"],
+    .board-tile[data-food="papaya"],
+    .board-tile[data-food="mango"] {
+      background: linear-gradient(155deg, #ffffff 0%, #fff7ed 100%);
+      border-color: #fed7aa;
+      box-shadow: 0 4px 0 #ea580c, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* Yellow fruits & sunlight: soft lavender-slate contrast tint with deep amber rim so yellow pops */
+    .board-tile[data-food="banana"],
+    .board-tile[data-food="sunlight"] {
+      background: linear-gradient(155deg, #fffbeb 0%, #fef3c7 100%);
+      border-color: #fde68a;
+      box-shadow: 0 4px 0 #d97706, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* Earthy brown vegetables & grains: warm alabaster backdrop with rich chestnut rim */
+    .board-tile[data-food="potato"],
+    .board-tile[data-food="peanuts"],
+    .board-tile[data-food="grains"],
+    .board-tile[data-food="coconut"] {
+      background: linear-gradient(155deg, #ffffff 0%, #fef3c7 100%);
+      border-color: #fde68a;
+      box-shadow: 0 4px 0 #92400e, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    /* White/Ivory foods: soft sky-blue backdrop so white eggs and milk never blend into white tiles */
+    .board-tile[data-food="eggs"],
+    .board-tile[data-food="milk"] {
+      background: linear-gradient(155deg, #eff6ff 0%, #dbeafe 100%);
+      border-color: #93c5fd;
+      box-shadow: 0 4px 0 #2563eb, 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
 
     /* Floating FX & Score Layer */
     .fx-canvas {
@@ -1246,32 +1298,32 @@
     };
 
     const FOOD_SYMBOLS = [
-      { id: 'milk',        name: 'Milk',        emoji: '🥛', benefit: 'Milk provides calcium & protein for strong bones!' },
-      { id: 'eggs',        name: 'Eggs',        emoji: '🥚', benefit: 'Eggs pack complete protein & essential choline!' },
-      { id: 'grains',      name: 'Grains',      emoji: '🌾', benefit: 'Whole grains fuel steady energy with complex fiber!' },
-      { id: 'peanuts',     name: 'Peanuts',     emoji: '🥜', benefit: 'Peanuts deliver plant protein & heart-friendly fats!' },
-      { id: 'moringa',     name: 'Moringa',     emoji: '🌿', benefit: 'Moringa leaves are rich in antioxidants & vitamins!' },
-      { id: 'spinach',     name: 'Spinach',     emoji: '🥬', benefit: 'Spinach powers your cells with iron, folate & Vitamin K!' },
-      { id: 'broccoli',    name: 'Broccoli',    emoji: '🥦', benefit: 'Broccoli boosts immunity with Vitamin C & fiber!' },
-      { id: 'potato',      name: 'Potato',      emoji: '🥔', benefit: 'Potatoes supply energizing potassium & Vitamin B6!' },
-      { id: 'carrot',      name: 'Carrot',      emoji: '🥕', benefit: 'Carrots shine with beta-carotene for healthy vision!' },
-      { id: 'tomato',      name: 'Tomato',      emoji: '🍅', benefit: 'Tomatoes are bursting with antioxidant lycopene!' },
-      { id: 'cabbage',     name: 'Cabbage',     emoji: '🥬', benefit: 'Crunchy cabbage supports digestion with rich fiber!' },
-      { id: 'pumpkin',     name: 'Pumpkin',     emoji: '🎃', benefit: 'Pumpkin is loaded with Vitamin A & golden carotenoids!' },
-      { id: 'guava',       name: 'Guava',       emoji: '🍈', benefit: 'Guava is a tropical powerhouse of Vitamin C & fiber!' },
-      { id: 'banana',      name: 'Banana',      emoji: '🍌', benefit: 'Bananas replenish electrolytes with natural potassium!' },
-      { id: 'papaya',      name: 'Papaya',      emoji: '🧡', benefit: 'Sweet papaya supports digestion with natural enzymes!' },
-      { id: 'orange',      name: 'Orange',      emoji: '🍊', benefit: 'Juicy oranges refresh and hydrate with Vitamin C!' },
-      { id: 'mango',       name: 'Mango',       emoji: '🥭', benefit: 'Mangoes bring tropical sunshine with Vitamins A & C!' },
-      { id: 'pomegranate', name: 'Pomegranate', emoji: '🍎', benefit: 'Pomegranates sparkle with ruby polyphenols!' },
-      { id: 'coconut',     name: 'Coconut',     emoji: '🥥', benefit: 'Coconut nourishes with electrolytes & healthy fats!' },
-      { id: 'avocado',     name: 'Avocado',     emoji: '🥑', benefit: 'Avocados offer creamy heart-healthy monounsaturated fats!' },
-      { id: 'sunlight',    name: 'Sunlight',    emoji: '☀️', benefit: 'Morning sunlight helps your body synthesize Vitamin D!' }
+      { id: 'potato',      name: 'Potato',      emoji: '🥔', colorGroup: 'brown',  benefit: 'Potatoes supply energizing potassium & Vitamin B6!' },
+      { id: 'broccoli',    name: 'Broccoli',    emoji: '🥦', colorGroup: 'green',  benefit: 'Broccoli boosts immunity with Vitamin C & fiber!' },
+      { id: 'tomato',      name: 'Tomato',      emoji: '🍅', colorGroup: 'red',    benefit: 'Tomatoes are bursting with antioxidant lycopene!' },
+      { id: 'carrot',      name: 'Carrot',      emoji: '🥕', colorGroup: 'orange', benefit: 'Carrots shine with beta-carotene for healthy vision!' },
+      { id: 'banana',      name: 'Banana',      emoji: '🍌', colorGroup: 'yellow', benefit: 'Bananas replenish electrolytes with natural potassium!' },
+      { id: 'orange',      name: 'Orange',      emoji: '🍊', colorGroup: 'citrus', benefit: 'Juicy oranges refresh and hydrate with Vitamin C!' },
+      { id: 'spinach',     name: 'Spinach',     emoji: '🥬', colorGroup: 'leafy',  benefit: 'Spinach powers your cells with iron, folate & Vitamin K!' },
+      { id: 'pumpkin',     name: 'Pumpkin',     emoji: '🎃', colorGroup: 'orange', benefit: 'Pumpkin is loaded with Vitamin A & golden carotenoids!' },
+      { id: 'eggs',        name: 'Eggs',        emoji: '🥚', colorGroup: 'ivory',  benefit: 'Eggs pack complete protein & essential choline!' },
+      { id: 'avocado',     name: 'Avocado',     emoji: '🥑', colorGroup: 'green',  benefit: 'Avocados offer creamy heart-healthy monounsaturated fats!' },
+      { id: 'pomegranate', name: 'Pomegranate', emoji: '🍎', colorGroup: 'red',    benefit: 'Pomegranates sparkle with ruby polyphenols!' },
+      { id: 'mango',       name: 'Mango',       emoji: '🥭', colorGroup: 'yellow', benefit: 'Mangoes bring tropical sunshine with Vitamins A & C!' },
+      { id: 'cabbage',     name: 'Cabbage',     emoji: '🥬', colorGroup: 'leafy',  benefit: 'Crunchy cabbage supports digestion with rich fiber!' },
+      { id: 'papaya',      name: 'Papaya',      emoji: '🧡', colorGroup: 'orange', benefit: 'Sweet papaya supports digestion with natural enzymes!' },
+      { id: 'guava',       name: 'Guava',       emoji: '🍈', colorGroup: 'green',  benefit: 'Guava is a tropical powerhouse of Vitamin C & fiber!' },
+      { id: 'coconut',     name: 'Coconut',     emoji: '🥥', colorGroup: 'brown',  benefit: 'Coconut nourishes with electrolytes & healthy fats!' },
+      { id: 'sunlight',    name: 'Sunlight',    emoji: '☀️', colorGroup: 'yellow', benefit: 'Morning sunlight helps your body synthesize Vitamin D!' },
+      { id: 'milk',        name: 'Milk',        emoji: '🥛', colorGroup: 'ivory',  benefit: 'Milk provides calcium & protein for strong bones!' },
+      { id: 'grains',      name: 'Grains',      emoji: '🌾', colorGroup: 'brown',  benefit: 'Whole grains fuel steady energy with complex fiber!' },
+      { id: 'peanuts',     name: 'Peanuts',     emoji: '🥜', colorGroup: 'brown',  benefit: 'Peanuts deliver plant protein & heart-friendly fats!' },
+      { id: 'moringa',     name: 'Moringa',     emoji: '🌿', colorGroup: 'green',  benefit: 'Moringa leaves are rich in antioxidants & vitamins!' }
     ];
 
     const LEVEL_CONFIGS = [
-      { level: 1,  target: 500,  moves: 20, foodCount: 6, difficulty: 'Easy',        msg: 'Welcome! Match 3 identical foods to start your wellness journey.' },
-      { level: 2,  target: 700,  moves: 20, foodCount: 6, difficulty: 'Easy',        msg: 'Tip: Matching 4 or 5 foods at once scores huge bonus points!' },
+      { level: 1,  target: 500,  moves: 20, foodCount: 7, difficulty: 'Easy',        msg: 'Welcome! Match colorful vegetables & fruits to start your wellness journey.' },
+      { level: 2,  target: 700,  moves: 20, foodCount: 7, difficulty: 'Easy',        msg: 'Tip: Matching 4 or 5 foods at once scores huge bonus points!' },
       { level: 3,  target: 900,  moves: 19, foodCount: 7, difficulty: 'Fresh',       msg: 'A rainbow on your plate means a wider variety of micronutrients!' },
       { level: 4,  target: 1100, moves: 19, foodCount: 7, difficulty: 'Fresh',       msg: 'Chain cascades together to build your combo multiplier!' },
       { level: 5,  target: 1300, moves: 18, foodCount: 7, difficulty: 'Balanced',    msg: 'Leafy greens and whole grains keep your energy steady all day.' },
@@ -1696,15 +1748,23 @@
        4. BOARD INITIALIZATION & FOOD SELECTION
        ========================================================================== */
     function selectFoodsForLevel(levelNum, count) {
-      // Deterministically rotate through all 21 symbols across levels + slight shuffle
-      // Avoid pairing Spinach and Cabbage in the same level when possible so emojis are even more distinct
-      const pool = [...FOOD_SYMBOLS];
-      const offset = ((levelNum - 1) * 5) % pool.length;
-      const rotated = pool.slice(offset).concat(pool.slice(0, offset));
-
+      // Level 1 features Potato, Broccoli, Tomato, Carrot, Banana, Orange, and Spinach
+      // Higher levels always include all main vegetable color families (green, red, orange, yellow, brown)
+      if (levelNum === 1) {
+        return FOOD_SYMBOLS.slice(0, count);
+      }
+      const coreVegIds = ['broccoli', 'tomato', 'carrot', 'potato', 'banana', 'orange', 'spinach', 'pumpkin'];
       const chosen = [];
+      const corePool = FOOD_SYMBOLS.filter(f => coreVegIds.includes(f.id));
+      for (const item of corePool) {
+        if (chosen.length >= Math.min(5, count)) break;
+        chosen.push(item);
+      }
+      const offset = ((levelNum - 1) * 3) % FOOD_SYMBOLS.length;
+      const rotated = FOOD_SYMBOLS.slice(offset).concat(FOOD_SYMBOLS.slice(0, offset));
       for (const item of rotated) {
         if (chosen.length >= count) break;
+        if (chosen.some(f => f.id === item.id)) continue;
         if (item.id === 'cabbage' && chosen.some(f => f.id === 'spinach')) continue;
         if (item.id === 'spinach' && chosen.some(f => f.id === 'cabbage')) continue;
         chosen.push(item);
